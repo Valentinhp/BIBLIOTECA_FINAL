@@ -1,3 +1,4 @@
+
 from pathlib import Path
 
 # BASE_DIR: Ruta base del proyecto
@@ -7,10 +8,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'tu-clave-secreta-aqui'
 
 # Modo de depuración (¡desactiva en producción!)
-DEBUG = True
+DEBUG = False  # Cambia a False en producción
 
 # Agrega aquí el dominio de Render
-ALLOWED_HOSTS = ['biblioteca-final-h8i9.onrender.com', '127.0.0.1']
+ALLOWED_HOSTS = ['biblioteca-final-h8i9.onrender.com', '127.0.0.1', 'localhost']
 
 # Aplicaciones instaladas
 INSTALLED_APPS = [
@@ -27,6 +28,7 @@ INSTALLED_APPS = [
 # Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Para servir archivos estáticos en producción
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # Para soporte multiidioma
     'django.middleware.common.CommonMiddleware',
@@ -91,6 +93,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'mi_app' / 'static']  # Ruta a archivos estáticos
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Configuración adicional para WhiteNoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Configuración de inicio/cierre de sesión
 LOGIN_URL = '/login/'  # Redirección si no está autenticado

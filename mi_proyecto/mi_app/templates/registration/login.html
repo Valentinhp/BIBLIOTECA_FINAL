@@ -1,0 +1,175 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Biblioteca</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/libreria.ico' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: url('{% static "images/hero-background.jpg" %}') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Montserrat', 'Roboto', sans-serif;
+            margin: 0;
+            color: #fff;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid #30363d;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            color: #58a6ff;
+        }
+
+        .navbar-nav .nav-link {
+            color: #c9d1d9;
+            transition: color 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+            color: #00bcd4;
+        }
+
+        .login-container {
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            margin: 100px auto;
+        }
+
+        .login-image {
+            max-width: 80px;
+            margin-bottom: 20px;
+        }
+
+        .login-header {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #00bcd4;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            background-color: #222;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .form-control:focus {
+            background-color: #333;
+            color: #fff;
+            border-color: #00bcd4;
+            outline: none;
+        }
+
+        .btn-login {
+            background-color: #00bcd4;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            width: 100%;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            background-color: #0097a7;
+            transform: scale(1.05);
+        }
+
+        .login-link {
+            color: #00bcd4;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .login-link:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <a class="navbar-brand" href="{% url 'mi_app:home' %}">Biblioteca del Bienestar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:home' %}">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:acerca' %}">Acerca de</a></li>
+                <li class="nav-item"><a class="nav-link active" href="{% url 'mi_app:login' %}">Iniciar Sesión</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:signup' %}">Registrarse</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contenedor de Login -->
+    <div class="login-container">
+        <img src="{% static 'images/library.png' %}" alt="Biblioteca" class="login-image">
+
+        <h2 class="login-header">Iniciar Sesión</h2>
+
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                Por favor, corrige los errores abajo.
+            </div>
+        {% endif %}
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" action="{% url 'mi_app:login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Usuario</label>
+                {{ form.username }}
+            </div>
+            <div class="form-group">
+                <label for="id_password">Contraseña</label>
+                {{ form.password }}
+            </div>
+            <button type="submit" class="btn btn-login">Ingresar</button>
+        </form>
+
+        <div class="mt-3">
+            <p>¿No tienes cuenta? <a href="{% url 'mi_app:signup' %}" class="login-link">Regístrate aquí</a>.</p>
+        </div>
+    </div>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

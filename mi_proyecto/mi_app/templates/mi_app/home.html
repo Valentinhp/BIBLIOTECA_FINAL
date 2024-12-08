@@ -1,0 +1,224 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Biblioteca del Bienestar</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/libreria.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            background-color: #0d1117;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background-color: rgba(13, 17, 23, 0.95);
+            padding: 15px 30px;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .navbar-nav .nav-link {
+            color: #fff;
+            text-transform: uppercase;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #00bcd4;
+        }
+
+        .hero-section {
+            background: url('{% static "images/hero-background.jpg" %}') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        /* Fondo semitransparente detrás del texto */
+        .hero-overlay {
+            background: rgba(0, 0, 0, 0.5); /* Fondo negro translúcido */
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8); /* Sombra del texto */
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            color: #d1d5db;
+            margin-bottom: 30px;
+            max-width: 700px;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); /* Sombra del texto */
+        }
+
+        .btn-primary {
+            background-color: #00bcd4;
+            border: none;
+            font-size: 1rem;
+            padding: 12px 25px;
+            border-radius: 50px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0097a7;
+            transform: scale(1.05);
+        }
+
+        .features-section {
+            padding: 50px 20px;
+            background-color: #0d1117;
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .feature-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: none;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 15px rgba(0, 188, 212, 0.3);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: #00bcd4;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h5 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background-color: #000;
+            color: #777;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <a class="navbar-brand" href="#">Biblioteca del Bienestar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                {% if not request.resolver_match.url_name == "home" %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:home' %}">Inicio</a></li>
+                {% endif %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:acerca' %}">Acerca de</a></li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:logout' %}">Cerrar sesión</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:login' %}">Iniciar sesión</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:signup' %}">Registrarse</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-overlay">
+            <h1>Biblioteca del Bienestar</h1>
+            <p>Un lugar donde puedes gestionar y explorar tu colección personal de libros con un diseño moderno y minimalista.</p>
+            <a href="{% url 'mi_app:index' %}" class="btn btn-primary">Ir a Mi Biblioteca</a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <h2 class="features-title">Descubre nuestras funcionalidades</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="feature-card">
+                    <i class="fas fa-book"></i>
+                    <h5>Gestión de Libros</h5>
+                    <p>Administra tu colección personal de libros con facilidad y orden.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="feature-card">
+                    <i class="fas fa-search"></i>
+                    <h5>Búsqueda Inteligente</h5>
+                    <p>Encuentra cualquier libro de tu biblioteca en segundos.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="feature-card">
+                    <i class="fas fa-comments"></i>
+                    <h5>Comparte Reseñas</h5>
+                    <p>Deja tus opiniones y descubre las recomendaciones de otros lectores.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Biblioteca del Bienestar. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

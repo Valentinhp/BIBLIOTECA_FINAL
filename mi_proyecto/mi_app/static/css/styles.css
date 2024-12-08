@@ -1,0 +1,176 @@
+/* mi_app/static/css/styles.css */
+
+/* Variables de color para temas */
+:root {
+    --background-color: #f9f9f9;
+    --text-color: #333333;
+    --primary-color: #007bff;
+    --navbar-color: #343a40;
+}
+
+body.dark-mode {
+    --background-color: #121212;
+    --text-color: #e0e0e0;
+    --primary-color: #bb86fc;
+    --navbar-color: #1f1f1f;
+}
+
+/* Fondo y texto */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--navbar-color) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    color: #ffffff !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+    color: #ffffff !important;
+    transition: color 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Botones */
+.btn-action {
+    border-radius: 50px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-action:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+.btn-logout {
+    background-color: #dc3545;
+    color: #ffffff;
+    border: none;
+    transition: background-color 0.3s;
+}
+.btn-logout:hover {
+    background-color: #c82333;
+}
+
+/* Formularios */
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Modales */
+.modal-content {
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Tablas */
+.table-container, .form-container {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+table.dataTable thead th {
+    background-color: #343a40;
+    color: #ffffff;
+    text-align: center;
+}
+table.dataTable tbody tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+table.dataTable tbody tr:hover {
+    background-color: #e9ecef;
+}
+table.dataTable tbody td {
+    vertical-align: middle;
+}
+
+/* Select2 */
+.select2-container--default .select2-selection--multiple {
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: var(--primary-color);
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin-top: 5px;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #fff;
+    margin-right: 5px;
+}
+
+/* Tooltips */
+.tooltip-inner {
+    background-color: #333333;
+    color: #ffffff;
+    border-radius: 5px;
+}
+
+/* Animaciones suaves para modales */
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+}
+.modal.show .modal-dialog {
+    transform: translate(0, 0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    .table-container, .form-container {
+        padding: 20px;
+    }
+}

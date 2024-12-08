@@ -1,0 +1,1137 @@
+<!-- mi_proyecto/mi_app/templates/mi_app/index.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Metadatos esenciales -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de Libros</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/libreria.ico' %}">
+
+    <!-- Enlaces a estilos CSS de Bootstrap y otras librerías -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Estilos personalizados en línea -->
+    <style>
+        /* Puedes mover estos estilos a styles.css si lo prefieres */
+        body {
+            font-family: 'Montserrat', 'Roboto', sans-serif;
+            background-color: var(--background-color, #f9f9f9);
+            color: var(--text-color, #333333);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .navbar {
+            background-color: var(--navbar-color, #343a40) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: #ffffff !important;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .navbar-nav .nav-link {
+            color: #ffffff !important;
+            transition: color 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--primary-color, #00aaff) !important;
+        }
+
+        .btn-logout {
+            background-color: #dc3545;
+            color: #ffffff;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn-logout:hover {
+            background-color: #c82333;
+        }
+
+        .table-container, .form-container {
+            background-color: var(--background-color, #ffffff);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2, h3 {
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+        }
+
+        #editarTextoComentario {
+            resize: none;
+        }
+
+        table.dataTable thead th {
+            background-color: #343a40;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        table.dataTable tbody td {
+            vertical-align: middle;
+        }
+
+        .btn-action {
+            margin-right: 5px;
+        }
+
+        table.dataTable tbody tr {
+            height: 60px;
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            .table-container, .form-container {
+                padding: 20px;
+            }
+        }
+
+        body.dark-mode {
+            --background-color: #121212;
+            --text-color: #e0e0e0;
+            --navbar-color: #1f1f1f;
+            --primary-color: #bb86fc;
+        }
+
+        .tooltip-inner {
+            background-color: #333333;
+            color: #ffffff;
+            border-radius: 5px;
+        }
+
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out;
+        }
+
+        .modal.show .modal-dialog {
+            transform: translate(0, 0);
+        }
+
+        /* Estilos para alertas dinámicas */
+        #alertContainer .alert {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+        }
+    </style>
+    
+    <!-- Variables JavaScript con información del usuario actual -->
+    <script>
+        const currentUser = '{{ user.username }}';
+        const isAdmin = {{ user.is_staff|yesno:"true,false" }};
+    </script>
+</head>
+<body>
+    <!-- Barra de navegación principal -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Biblioteca de Libros</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    {% if isAdmin %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#administrarAutores">Administrar Autores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#administrarLibros">Administrar Libros</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#comentarios">Comentarios</a>
+                    </li>
+                </ul>
+                <!-- Selector de Idioma -->
+                <form class="d-flex">
+                    <select id="idiomaSelector" class="form-select">
+                        <option value="es" selected>Español</option>
+                        <option value="en">English</option>
+                        <!-- Añade más idiomas según necesidad -->
+                    </select>
+                </form>
+                <!-- Toggle para Tema Oscuro -->
+                <div class="form-check form-switch ml-3">
+                    <input class="form-check-input" type="checkbox" id="toggleDarkMode">
+                    <label class="form-check-label text-light" for="toggleDarkMode">Tema Oscuro</label>
+                </div>
+
+                <button class="btn btn-logout ml-3" onclick="window.location.href='{% url 'mi_app:logout' %}'" data-toggle="tooltip" title="Cerrar Sesión">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor principal de la página -->
+    <div class="container mt-5 pt-5">
+        <!-- Contenedor para alertas dinámicas -->
+        <div id="alertContainer"></div>
+
+        <!-- Mensaje de bienvenida al usuario -->
+        <div class="text-center mt-4">
+            <h3>¡Bienvenido, {{ user.username }}!</h3>
+        </div>
+
+        {% if isAdmin %}
+        <!-- Sección de administración de autores -->
+        <div id="administrarAutores" class="form-container">
+            <h2>Administrar Autores</h2>
+            <table id="tablaAutores" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos serán cargados dinámicamente vía DataTables -->
+                </tbody>
+            </table>
+
+            <!-- Formulario para agregar nuevos autores -->
+            <div class="mt-4">
+                <h3>Agregar Nuevo Autor</h3>
+                <form id="addAuthorForm" class="row g-3">
+                    {% csrf_token %}
+                    <div class="col-md-6">
+                        <label for="nombreAutor" class="form-label">Nombre del Autor</label>
+                        <input type="text" id="nombreAutor" class="form-control" placeholder="Escribe el nombre del autor" required>
+                        <div class="invalid-feedback">
+                            Por favor, ingresa el nombre del autor.
+                        </div>
+                    </div>
+                    <div class="col-md-6 align-self-end">
+                        <button type="submit" class="btn btn-success w-100">Agregar Autor <i class="fas fa-plus-circle"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Sección de listado de libros -->
+        <div id="administrarLibros" class="table-container">
+            <h1>Listado de Libros</h1>
+            <p class="instructions">
+                Aquí puedes ver la lista de libros disponibles en la biblioteca. Usa las opciones para eliminar, editar o ver comentarios.
+            </p>
+            <table id="tablaLibros" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Autores</th>
+                        <th>Año de Publicación</th>
+                        <th>Idioma</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos serán cargados dinámicamente vía DataTables -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sección de formulario para agregar nuevos libros -->
+        <div class="form-container">
+            <h2>Agregar Nuevo Libro</h2>
+            <form id="addBookForm" class="row g-3">
+                {% csrf_token %}
+                <div class="col-md-6">
+                    <label for="titulo" class="form-label">Título</label>
+                    <input type="text" id="titulo" class="form-control" placeholder="Escribe el título" required>
+                    <div class="invalid-feedback">
+                        Por favor, ingresa el título del libro.
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="anio_publicacion" class="form-label">Año de Publicación</label>
+                    <input type="number" id="anio_publicacion" class="form-control" placeholder="Ej. 2020" required>
+                    <div class="invalid-feedback">
+                        Por favor, ingresa el año de publicación.
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="idioma" class="form-label">Idioma</label>
+                    <input type="text" id="idioma" class="form-control" placeholder="Ej. Español" required>
+                    <div class="invalid-feedback">
+                        Por favor, ingresa el idioma.
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="autores" class="form-label">Autores</label>
+                    <div class="input-group">
+                        <select id="autores" class="form-control" multiple="multiple" required></select>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="addAuthorBtn" title="Agregar Nuevo Autor" data-toggle="tooltip">
+                                <i class="fas fa-plus-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="invalid-feedback">
+                        Por favor, selecciona al menos un autor.
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">Agregar Libro <i class="fas fa-plus-circle"></i></button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sección de comentarios -->
+        <div id="comentarios" class="form-container mt-4">
+            <h2>Comentarios</h2>
+            <table id="tablaComentarios" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Libro</th>
+                        <th>Usuario</th>
+                        <th>Comentario</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Datos cargados dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal para agregar un nuevo autor desde el formulario de libros -->
+        <div class="modal fade" id="agregarAutorModal" tabindex="-1" role="dialog" aria-labelledby="agregarAutorModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form id="agregarAutorFormModal">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="agregarAutorModalLabel">Agregar Nuevo Autor</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="nuevoNombreAutor">Nombre del Autor</label>
+                                <input type="text" class="form-control" id="nuevoNombreAutor" placeholder="Escribe el nombre del autor" required>
+                                <div class="invalid-feedback">
+                                    Por favor, ingresa el nombre del autor.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Agregar Autor</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para ver y gestionar comentarios de un libro -->
+        <div class="modal fade" id="comentariosModal" tabindex="-1" role="dialog" aria-labelledby="comentariosModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="comentariosModalLabel">Comentarios del Libro</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <ul id="comentariosList" class="list-group mb-3">
+                            <!-- Comentarios serán cargados dinámicamente -->
+                        </ul>
+                        <div class="form-group">
+                            <label for="nuevoComentario">Agregar Comentario</label>
+                            <textarea id="nuevoComentario" class="form-control" rows="3" placeholder="Escribe un comentario" required></textarea>
+                            <div class="invalid-feedback">
+                                Por favor, escribe un comentario antes de guardar.
+                            </div>
+                        </div>
+                        <button id="guardarComentario" class="btn btn-primary">Guardar Comentario</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para editar un comentario existente -->
+        <div class="modal fade" id="editarComentarioModal" tabindex="-1" aria-labelledby="editarComentarioModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="editarComentarioForm">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editarComentarioModalLabel">Editar Comentario</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="editarTextoComentario">Comentario</label>
+                                <textarea class="form-control" id="editarTextoComentario" rows="4" required></textarea>
+                                <div class="invalid-feedback">
+                                    El comentario no puede estar vacío.
+                                </div>
+                            </div>
+                            <input type="hidden" id="editarComentarioId">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" id="guardarEdicionComentario">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para ver detalles del libro -->
+        <div class="modal fade" id="detalleLibroModal" tabindex="-1" aria-labelledby="detalleLibroModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detalleLibroModalLabel">Detalles del Libro</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 id="detalleTitulo"></h3>
+                        <p><strong>Año de Publicación:</strong> <span id="detalleAnio"></span></p>
+                        <p><strong>Idioma:</strong> <span id="detalleIdioma"></span></p>
+                        <p><strong>Autores:</strong> <span id="detalleAutores"></span></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript personalizado para la funcionalidad de la página -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            /**
+             * Función para obtener el valor de una cookie por su nombre
+             * @param {string} name - Nombre de la cookie
+             * @returns {string|null} - Valor de la cookie o null si no existe
+             */
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            const csrftoken = getCookie('csrftoken');
+
+            // Configurar AJAX para incluir automáticamente el token CSRF en las solicitudes
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    if (!/^GET|HEAD|OPTIONS|TRACE$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
+            /**
+             * Función para mostrar alertas dinámicas
+             * @param {string} tipo - Tipo de alerta ('success', 'danger', etc.)
+             * @param {string} mensaje - Mensaje a mostrar
+             */
+            function mostrarAlerta(tipo, mensaje) {
+                $('#alertContainer').html(`
+                    <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
+                        ${mensaje}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                `);
+            }
+
+            /**
+             * Inicializar DataTable para la tabla de autores
+             */
+            {% if isAdmin %}
+            const tablaAutores = $('#tablaAutores').DataTable({
+                ajax: {
+                    url: "{% url 'mi_app:obtener_autores' %}",
+                    dataSrc: ""
+                },
+                columns: [
+                    { data: "id", className: "text-center" },
+                    { data: "nombre" },
+                    {
+                        data: null,
+                        orderable: false,
+                        className: "text-center",
+                        render: function (data, type, row) {
+                            return `
+                                <button class='btn btn-warning btn-sm btn-action btn-edit-author' title="Editar Autor" data-toggle="tooltip">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class='btn btn-danger btn-sm btn-action btn-delete-author' title="Eliminar Autor" data-toggle="tooltip">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            `;
+                        }
+                    }
+                ],
+                responsive: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+                },
+                pagingType: "full_numbers",
+                lengthMenu: [10, 25, 50, 100],
+                pageLength: 10,
+                scrollY: "300px",
+                scrollCollapse: true,
+                dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                     "<'row'<'col-sm-12'tr>>" +
+                     "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            });
+            {% endif %}
+
+            /**
+             * Inicializar DataTable para la tabla de libros
+             */
+            const tablaLibros = $('#tablaLibros').DataTable({
+                ajax: {
+                    url: "{% url 'mi_app:obtener_libros' %}",
+                    dataSrc: "data"
+                },
+                columns: [
+                    { data: "id", className: "text-center" },
+                    { data: "titulo" },
+                    { data: "autores_nombres" },
+                    { data: "anio_publicacion", className: "text-center" },
+                    { data: "idioma", className: "text-center" },
+                    {
+                        data: null,
+                        orderable: false,
+                        className: "text-center",
+                        render: function (data, type, row) {
+                            let botones = `
+                                <button class='btn btn-info btn-sm btn-action btn-comentarios' title="Comentarios" data-toggle="tooltip">
+                                    <i class="fas fa-comments"></i>
+                                </button>
+                            `;
+                            {% if isAdmin %}
+                            botones += `
+                                <button class='btn btn-warning btn-sm btn-action btn-edit' title="Editar" data-toggle="tooltip">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class='btn btn-danger btn-sm btn-action btn-delete' title="Eliminar" data-toggle="tooltip">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            `;
+                            {% endif %}
+                            return botones;
+                        }
+                    }
+                ],
+                responsive: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+                },
+                pagingType: "full_numbers",
+                lengthMenu: [10, 25, 50, 100],
+                pageLength: 10,
+                scrollY: "400px",
+                scrollCollapse: true,
+                dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                     "<'row'<'col-sm-12'tr>>" +
+                     "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            });
+
+            /**
+             * Inicializar DataTable para la tabla de comentarios
+             */
+            const tablaComentarios = $('#tablaComentarios').DataTable({
+                ajax: {
+                    url: "{% url 'mi_app:obtener_todos_comentarios' %}",
+                    dataSrc: ""
+                },
+                columns: [
+                    { data: "id", className: "text-center" },
+                    { data: "libro__titulo" },
+                    { data: "usuario__username" },
+                    { data: "texto" },
+                    { data: "fecha", className: "text-center" },
+                    {
+                        data: null,
+                        orderable: false,
+                        className: "text-center",
+                        render: function (data, type, row) {
+                            let botones = "";
+                            if (isAdmin || currentUser === row.usuario__username) {
+                                botones += `
+                                    <button class='btn btn-warning btn-sm btn-action btn-edit-comentario' title="Editar Comentario" data-id="${row.id}" data-toggle="tooltip">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class='btn btn-danger btn-sm btn-action btn-delete-comentario' title="Eliminar Comentario" data-id="${row.id}" data-toggle="tooltip">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                `;
+                            }
+                            return botones;
+                        }
+                    }
+                ],
+                responsive: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+                },
+                pagingType: "full_numbers",
+                lengthMenu: [10, 25, 50, 100],
+                pageLength: 10,
+                scrollY: "300px",
+                scrollCollapse: true,
+                dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                     "<'row'<'col-sm-12'tr>>" +
+                     "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            });
+
+            /**
+             * Inicializar Select2 para el campo de selección de autores en el formulario de libros
+             */
+            $('#autores').select2({
+                placeholder: "Selecciona autores",
+                ajax: {
+                    url: "{% url 'mi_app:buscar_autores' %}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { q: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.results.map(autor => ({ id: autor.id, text: autor.text }))
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1,
+                width: '100%'
+            });
+
+            /**
+             * Función para agregar un nuevo autor desde el formulario de administración
+             */
+            {% if isAdmin %}
+            $('#addAuthorForm').on('submit', function (e) {
+                e.preventDefault();  // Evita la recarga de la página
+                const nombreAutor = $('#nombreAutor').val().trim();
+
+                if (nombreAutor) {
+                    $.ajax({
+                        url: "{% url 'mi_app:agregar_autor' %}",
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ nombre: nombreAutor }),
+                        success: function (response) {
+                            mostrarAlerta('success', 'Autor agregado correctamente.');
+                            $('#nombreAutor').val('');  // Limpia el campo
+                            tablaAutores.ajax.reload();  // Recarga la tabla de autores
+                            $('#autores').trigger('change');  // Actualiza Select2
+                        },
+                        error: function (xhr) {
+                            const error = xhr.responseJSON.error || "Error al agregar autor.";
+                            mostrarAlerta('danger', error);
+                        }
+                    });
+                } else {
+                    mostrarAlerta('danger', "El nombre del autor no puede estar vacío.");
+                }
+            });
+            {% endif %}
+
+            /**
+             * Evento para abrir el modal de agregar autor desde el formulario de libros
+             */
+            $('#addAuthorBtn').on('click', function () {
+                $('#agregarAutorModal').modal('show');
+            });
+
+            /**
+             * Función para agregar un nuevo autor desde el modal de libros
+             */
+            $('#agregarAutorFormModal').on('submit', function (e) {
+                e.preventDefault();
+                const nuevoNombreAutor = $('#nuevoNombreAutor').val().trim();
+
+                if (nuevoNombreAutor) {
+                    $.ajax({
+                        url: "{% url 'mi_app:agregar_autor' %}",
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ nombre: nuevoNombreAutor }),
+                        success: function (response) {
+                            mostrarAlerta('success', 'Autor agregado correctamente.');
+                            $('#nuevoNombreAutor').val('');  // Limpia el campo
+                            $('#agregarAutorModal').modal('hide');  // Cierra el modal
+                            {% if isAdmin %}
+                            tablaAutores.ajax.reload();  // Recarga la tabla de autores si es admin
+                            {% endif %}
+                            // Agregar el nuevo autor al Select2 y seleccionarlo
+                            var newOption = new Option(response.nombre, response.id, true, true);
+                            $('#autores').append(newOption).trigger('change');
+                        },
+                        error: function (xhr) {
+                            const error = xhr.responseJSON.error || "Error al agregar autor.";
+                            mostrarAlerta('danger', error);
+                        }
+                    });
+                } else {
+                    mostrarAlerta('danger', "El nombre del autor no puede estar vacío.");
+                }
+            });
+
+            /**
+             * Función para editar un autor en la tabla de autores
+             */
+            {% if isAdmin %}
+            $('#tablaAutores').on('click', '.btn-edit-author', function () {
+                const data = tablaAutores.row($(this).parents('tr')).data();
+                const autorId = data.id;
+                const nombreActual = data.nombre;
+
+                const nuevoNombre = prompt("Editar nombre del autor:", nombreActual);
+                if (nuevoNombre && nuevoNombre.trim() !== "") {
+                    $.ajax({
+                        url: "{% url 'mi_app:editar_autor' autor_id=0 %}".replace('/0/', `/${autorId}/`),
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ nombre: nuevoNombre }),
+                        success: function () {
+                            mostrarAlerta('success', 'Autor actualizado correctamente.');
+                            tablaAutores.ajax.reload();
+                            tablaLibros.ajax.reload();
+                            tablaComentarios.ajax.reload(); // Actualizar tabla principal de comentarios
+                            $('#autores').trigger('change'); // Actualizar Select2
+                        },
+                        error: function (xhr) {
+                            const error = xhr.responseJSON.error || "Error al editar autor.";
+                            mostrarAlerta('danger', "Error al editar autor: " + error);
+                        }
+                    });
+                } else if (nuevoNombre !== null) {
+                    mostrarAlerta('warning', "El nombre del autor no puede estar vacío.");
+                }
+            });
+
+            /**
+             * Función para eliminar un autor en la tabla de autores
+             */
+            $('#tablaAutores').on('click', '.btn-delete-author', function () {
+                const data = tablaAutores.row($(this).parents('tr')).data();
+                const autorId = data.id;
+                const nombreAutor = data.nombre;
+                if (confirm(`¿Estás seguro de eliminar al autor "${nombreAutor}"?`)) {
+                    $.ajax({
+                        url: "{% url 'mi_app:eliminar_autor' autor_id=0 %}".replace('/0/', `/${autorId}/`),
+                        method: 'POST',
+                        success: function () {
+                            mostrarAlerta('success', "Autor eliminado correctamente.");
+                            tablaAutores.ajax.reload();
+                            tablaLibros.ajax.reload();
+                            tablaComentarios.ajax.reload(); // Actualizar tabla principal de comentarios
+                            $('#autores').trigger('change'); // Actualizar Select2
+                        },
+                        error: function (xhr) {
+                            const error = xhr.responseJSON.error || "Error al eliminar autor.";
+                            mostrarAlerta('danger', "Error al eliminar autor: " + error);
+                        }
+                    });
+                }
+            });
+            {% endif %}
+
+            /**
+             * Agregar un nuevo libro desde el formulario
+             */
+            $('#addBookForm').on('submit', function (e) {
+                e.preventDefault();
+                const titulo = $('#titulo').val().trim();
+                const anioPublicacion = $('#anio_publicacion').val().trim();
+                const idioma = $('#idioma').val().trim();
+                const autores = $('#autores').val();
+
+                if (titulo && anioPublicacion && idioma && autores.length > 0) {
+                    $.ajax({
+                        url: "{% url 'mi_app:agregar_libro' %}",
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            titulo: titulo,
+                            anio_publicacion: anioPublicacion,
+                            idioma: idioma,
+                            autores: autores
+                        }),
+                        success: function (response) {
+                            mostrarAlerta('success', response.mensaje);
+                            $('#addBookForm')[0].reset();
+                            $('#autores').val(null).trigger('change');
+                            tablaLibros.ajax.reload();
+                            tablaComentarios.ajax.reload(); // Actualizar tabla principal de comentarios
+                        },
+                        error: function (xhr) {
+                            const error = xhr.responseJSON.error || "Error al agregar libro.";
+                            mostrarAlerta('danger', "Error al agregar libro: " + error);
+                        }
+                    });
+                } else {
+                    mostrarAlerta('warning', "Por favor, completa todos los campos del formulario.");
+                }
+            });
+
+            {% if isAdmin %}
+            /**
+             * Evento para editar un libro en la tabla de libros
+             */
+            $('#tablaLibros').on('click', '.btn-edit', function () {
+                const data = tablaLibros.row($(this).parents('tr')).data();
+                const libroId = data.id;
+                const tituloActual = data.titulo;
+                const anioActual = data.anio_publicacion;
+                const idiomaActual = data.idioma;
+                const autoresActuales = data.autores_nombres.split(", ").map(nombre => nombre.trim());
+
+                const nuevoTitulo = prompt("Editar título del libro:", tituloActual);
+                const nuevoAnio = prompt("Editar año de publicación:", anioActual);
+                const nuevoIdioma = prompt("Editar idioma:", idiomaActual);
+
+                if (nuevoTitulo && nuevoTitulo.trim() !== "" &&
+                    nuevoAnio && nuevoAnio.trim() !== "" &&
+                    nuevoIdioma && nuevoIdioma.trim() !== "") {
+
+                    // Obtener IDs de los autores seleccionados
+                    // Para simplificar, asumimos que los autores no cambian
+                    const autores = data.autores_nombres.split(", ").map(nombre => nombre.trim());
+                    // En una implementación más avanzada, podrías permitir editar los autores también
+
+                    $.ajax({
+                        url: "{% url 'mi_app:editar_libro' libro_id=0 %}".replace('/0/', `/${libroId}/`),
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            titulo: nuevoTitulo,
+                            anio_publicacion: nuevoAnio,
+                            idioma: nuevoIdioma,
+                            autores: autores
+                        }),
+                        success: function () {
+                            mostrarAlerta('success', 'Libro actualizado correctamente.');
+                            tablaLibros.ajax.reload();
+                            tablaComentarios.ajax.reload(); // Actualizar tabla principal de comentarios
+                        },
+                        error: function (xhr) {
+                            const error = xhr.responseJSON.error || "Error al editar libro.";
+                            mostrarAlerta('danger', "Error al editar libro: " + error);
+                        }
+                    });
+                } else {
+                    mostrarAlerta('warning', "Todos los campos deben estar llenos para editar el libro.");
+                }
+            });
+
+            /**
+             * Evento para eliminar un libro en la tabla de libros
+             */
+            $('#tablaLibros').on('click', '.btn-delete', function () {
+                const data = tablaLibros.row($(this).parents('tr')).data();
+                const libroId = data.id;
+                const tituloLibro = data.titulo;
+                if (confirm(`¿Estás seguro de eliminar el libro "${tituloLibro}"?`)) {
+                    $.ajax({
+                        url: "{% url 'mi_app:eliminar_libro' libro_id=0 %}".replace('/0/', `/${libroId}/`),
+                        method: 'POST',
+                        success: function () {
+                            mostrarAlerta('success', 'Libro eliminado correctamente.');
+                            tablaLibros.ajax.reload();
+                            tablaComentarios.ajax.reload(); // Actualizar tabla principal de comentarios
+                        },
+                        error: function (xhr) {
+                            const error = xhr.responseJSON.error || "Error al eliminar libro.";
+                            mostrarAlerta('danger', "Error al eliminar libro: " + error);
+                        }
+                    });
+                }
+            });
+            {% endif %}
+
+            /**
+             * Función para renderizar un comentario en la lista del modal
+             * @param {Object} comentario - Objeto del comentario
+             * @returns {string} - HTML del comentario
+             */
+            function renderComentario(comentario) {
+                const esAutor = (currentUser === comentario.usuario__username || isAdmin);
+                const acciones = esAutor ? `
+                    <button class="btn btn-sm btn-warning btn-edit-comentario mr-2" data-id="${comentario.id}" title="Editar Comentario" data-toggle="tooltip">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger btn-delete-comentario" data-id="${comentario.id}" title="Eliminar Comentario" data-toggle="tooltip">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                ` : '';
+
+                return `
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong>${comentario.usuario__username}</strong>: ${comentario.texto}
+                            </div>
+                            <div>
+                                ${acciones}
+                            </div>
+                        </div>
+                    </li>
+                `;
+            }
+
+            /**
+             * Función para cargar los comentarios de un libro específico en el modal
+             * @param {number} libroId - ID del libro
+             */
+            function cargarComentarios(libroId) {
+                $.ajax({
+                    url: "{% url 'mi_app:obtener_comentarios' libro_id=0 %}".replace('/0/', `/${libroId}/`),
+                    method: 'GET',
+                    success: function (response) {
+                        $('#comentariosList').empty();
+                        response.forEach(comentario => {
+                            $('#comentariosList').append(renderComentario(comentario));
+                        });
+                        // Inicializar tooltips dentro del modal
+                        $('#comentariosModal [data-toggle="tooltip"]').tooltip();
+                    },
+                    error: function () {
+                        mostrarAlerta('danger', "Error al cargar comentarios.");
+                    }
+                });
+            }
+
+            /**
+             * Abrir modal de comentarios al hacer clic en el botón correspondiente
+             */
+            $('#tablaLibros').on('click', '.btn-comentarios', function () {
+                const data = tablaLibros.row($(this).parents('tr')).data();
+                const libroId = data.id;
+                $('#comentariosModal').data('libro-id', libroId);
+                cargarComentarios(libroId);
+                $('#comentariosModal').modal('show');
+            });
+
+            /**
+             * Agregar un nuevo comentario desde el modal
+             */
+            $('#guardarComentario').on('click', function () {
+                const libroId = $('#comentariosModal').data('libro-id');
+                const comentarioTexto = $('#nuevoComentario').val().trim();
+
+                if (comentarioTexto) {
+                    $.ajax({
+                        url: "{% url 'mi_app:agregar_comentario' libro_id=0 %}".replace('/0/', `/${libroId}/`),
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ texto: comentarioTexto }),
+                        success: function (response) {
+                            mostrarAlerta('success', response.mensaje);
+                            $('#nuevoComentario').val('');
+                            cargarComentarios(libroId);
+                            tablaComentarios.ajax.reload(); // Actualizar tabla principal de comentarios
+                        },
+                        error: function (xhr) {
+                            const error = xhr.responseJSON.error || "Error al agregar comentario.";
+                            mostrarAlerta('danger', error);
+                        }
+                    });
+                } else {
+                    mostrarAlerta('warning', "Por favor, escribe un comentario antes de guardar.");
+                }
+            });
+
+            /**
+             * Delegación de eventos para editar y eliminar comentarios dentro del modal
+             */
+            $('#comentariosModal').on('click', '.btn-edit-comentario', function () {
+                const comentarioId = $(this).data('id'); // Obtener ID del comentario
+                const comentarioTexto = $(this).closest('.list-group-item').find('div:first-child').text().trim();
+
+                // Mostrar el modal de edición
+                $('#editarTextoComentario').val(comentarioTexto);
+                $('#editarComentarioId').val(comentarioId);
+                $('#editarComentarioModal').modal('show');
+            });
+
+            $('#comentariosModal').on('click', '.btn-delete-comentario', function () {
+                const comentarioId = $(this).data('id'); // Obtener ID del comentario
+
+                if (confirm('¿Estás seguro de eliminar este comentario?')) {
+                    $.ajax({
+                        url: "{% url 'mi_app:eliminar_comentario' comentario_id=0 %}".replace('/0/', `/${comentarioId}/`),
+                        method: 'POST',
+                        success: function () {
+                            mostrarAlerta('success', "Comentario eliminado correctamente.");
+                            const libroId = $('#comentariosModal').data('libro-id');
+                            cargarComentarios(libroId); // Recargar comentarios
+                            tablaComentarios.ajax.reload(); // Recargar tabla de comentarios
+                        },
+                        error: function (xhr) {
+                            const error = xhr.responseJSON.error || "Error al eliminar el comentario.";
+                            mostrarAlerta('danger', "Error al eliminar el comentario: " + error);
+                        }
+                    });
+                }
+            });
+
+            /**
+             * Guardar los cambios al editar un comentario desde el modal
+             */
+            $('#guardarEdicionComentario').on('click', function () {
+                const comentarioId = $('#editarComentarioId').val();
+                const nuevoTexto = $('#editarTextoComentario').val().trim();
+
+                if (nuevoTexto) {
+                    $.ajax({
+                        url: "{% url 'mi_app:editar_comentario' comentario_id=0 %}".replace('/0/', `/${comentarioId}/`),
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ texto: nuevoTexto }),
+                        success: function () {
+                            mostrarAlerta('success', "Comentario editado correctamente.");
+                            $('#editarComentarioModal').modal('hide');
+                            const libroId = $('#comentariosModal').data('libro-id');
+                            cargarComentarios(libroId); // Recargar comentarios
+                            tablaComentarios.ajax.reload(); // Recargar tabla de comentarios
+                        },
+                        error: function (xhr) {
+                            const error = xhr.responseJSON.error || "Error al editar comentario.";
+                            mostrarAlerta('danger', "Error al editar comentario: " + error);
+                        }
+                    });
+                } else {
+                    mostrarAlerta('warning', "El comentario no puede estar vacío.");
+                }
+            });
+
+            /**
+             * Manejadores de eventos para editar y eliminar comentarios en la tabla principal de comentarios
+             */
+            $('#tablaComentarios').on('click', '.btn-edit-comentario', function () {
+                const comentarioId = $(this).data('id');
+                // Obtener datos del comentario mediante DataTable
+                const data = tablaComentarios.row($(this).parents('tr')).data();
+                const comentarioTexto = data.texto;
+
+                // Mostrar el modal de edición
+                $('#editarTextoComentario').val(comentarioTexto);
+                $('#editarComentarioId').val(comentarioId);
+                $('#editarComentarioModal').modal('show');
+            });
+
+            $('#tablaComentarios').on('click', '.btn-delete-comentario', function () {
+                const comentarioId = $(this).data('id');
+
+                if (confirm('¿Estás seguro de eliminar este comentario?')) {
+                    $.ajax({
+                        url: "{% url 'mi_app:eliminar_comentario' comentario_id=0 %}".replace('/0/', `/${comentarioId}/`),
+                        method: 'POST',
+                        success: function () {
+                            mostrarAlerta('success', "Comentario eliminado correctamente.");
+                            tablaComentarios.ajax.reload(); // Recargar tabla de comentarios
+                        },
+                        error: function (xhr) {
+                            const error = xhr.responseJSON.error || "Error al eliminar el comentario.";
+                            mostrarAlerta('danger', "Error al eliminar el comentario: " + error);
+                        }
+                    });
+                }
+            });
+
+            {% if isAdmin %}
+            /**
+             * Evento para editar un autor en la tabla de autores
+             * (Este código ya ha sido eliminado para evitar duplicación)
+             */
+            {% endif %}
+
+            /**
+             * Toggle para Tema Oscuro
+             */
+            $('#toggleDarkMode').on('change', function () {
+                if ($(this).is(':checked')) {
+                    $('body').addClass('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    $('body').removeClass('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            // Verificar la preferencia de tema en localStorage
+            if (localStorage.getItem('theme') === 'dark') {
+                $('body').addClass('dark-mode');
+                $('#toggleDarkMode').prop('checked', true);
+            }
+
+            /**
+             * Implementar tooltips de Bootstrap
+             */
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+</body>
+</html>

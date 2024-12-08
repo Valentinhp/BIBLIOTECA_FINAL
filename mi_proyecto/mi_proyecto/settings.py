@@ -1,15 +1,17 @@
+import os
 from pathlib import Path
 
 # BASE_DIR: Ruta base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Clave secreta (¡cámbiala en producción!)
-SECRET_KEY = 'tu-clave-secreta-aqui'
+# Clave secreta obtenida desde las variables de entorno (cambiar en producción)
+SECRET_KEY = os.getenv('SECRET_KEY', 'clave-predeterminada')
 
-# Modo de depuración (¡desactiva en producción!)
-DEBUG = True
+# Modo de depuración dinámico según las variables de entorno
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+# Hosts permitidos
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1').split(',')
 
 # Aplicaciones instaladas
 INSTALLED_APPS = [
@@ -25,6 +27,7 @@ INSTALLED_APPS = [
 
 # Middleware
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Para manejo de estáticos en producción
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # Para soporte multiidioma
@@ -58,12 +61,12 @@ TEMPLATES = [
 # WSGI application
 WSGI_APPLICATION = 'mi_proyecto.wsgi.application'
 
-# Configuración de la base de datos (SQLite por defecto)
+# Configuración de la base de datos
+# Usa PostgreSQL en Render o SQLite por defecto
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
 }
 
 # Validadores de contraseñas
@@ -91,6 +94,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'mi_app' / 'static']  # Ruta a archivos estáticos
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Almacenamiento de archivos estáticos en producción
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Configuración de inicio/cierre de sesión
 LOGIN_URL = '/login/'  # Redirección si no está autenticado
 LOGIN_REDIRECT_URL = 'mi_app:home'  # Redirección tras iniciar sesión
@@ -98,3 +104,18 @@ LOGOUT_REDIRECT_URL = 'mi_app:login'  # Redirección tras cerrar sesión
 
 # Configuración predeterminada para IDs
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Configuración de logging en producción
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+}

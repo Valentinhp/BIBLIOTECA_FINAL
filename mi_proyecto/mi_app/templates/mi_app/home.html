@@ -1,174 +1,285 @@
 {% load static %}
+<!-- Carga las etiquetas de plantilla estáticas de Django para gestionar archivos estáticos como imágenes, CSS y JavaScript -->
 <!DOCTYPE html>
 <html lang="en">
+<!-- Define el idioma del documento como inglés -->
+
 <head>
+    <!-- Metadatos y enlaces a recursos externos -->
     <meta charset="UTF-8">
+    <!-- Establece la codificación de caracteres del documento a UTF-8 para soportar una amplia gama de caracteres -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Configura la ventana gráfica para asegurar que la página sea responsiva en dispositivos móviles -->
     <title>Inicio - La Estantería Infinita</title>
+    <!-- Título de la página que aparece en la pestaña del navegador -->
     <link rel="icon" type="image/x-icon" href="{% static 'images/libreria.ico' %}">
+    <!-- Enlaza el favicon de la página utilizando la etiqueta estática de Django para obtener la ruta correcta -->
+    
+    <!-- Enlaces a hojas de estilo externas y locales -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Enlaza una hoja de estilos local llamada 'styles.css' ubicada en la carpeta estática de Django -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Enlaza la hoja de estilos de Bootstrap desde un CDN para utilizar sus clases y componentes predefinidos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Enlaza la hoja de estilos de Font Awesome para utilizar iconos en la página -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Importa la fuente 'Poppins' desde Google Fonts con diferentes pesos para usar en la página -->
+    
     <style>
-        /* General Styles */
+        /* Estilos internos específicos para esta página */
+
+        /* Estilos Generales */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
+            /* Aplica la fuente 'Poppins' a todo el cuerpo del documento */
             color: white;
+            /* Establece el color de texto por defecto a blanco */
             background-color: #0d1117;
+            /* Define el color de fondo del cuerpo como un tono oscuro */
             overflow-x: hidden;
+            /* Evita el desplazamiento horizontal no deseado */
         }
 
+        /* Estilos para la Barra de Navegación (Navbar) */
         .navbar {
             background-color: rgba(13, 17, 23, 0.95);
+            /* Define un color de fondo semitransparente para la barra de navegación */
             padding: 15px 30px;
+            /* Aplica relleno superior e inferior de 15px y lateral de 30px */
         }
 
         .navbar-brand {
             font-weight: bold;
+            /* Hace que el texto del nombre de la marca sea negrita */
             font-size: 1.8rem;
+            /* Establece el tamaño de fuente a 1.8 rem */
             letter-spacing: 2px;
+            /* Añade un espaciado de 2px entre las letras */
             color: #fff;
+            /* Color del texto de la marca a blanco */
         }
 
         .navbar-nav .nav-link {
             color: #fff;
+            /* Color de los enlaces de navegación a blanco */
             text-transform: uppercase;
+            /* Transforma el texto a mayúsculas */
             padding: 10px 15px;
+            /* Aplica relleno de 10px arriba y abajo, y 15px a los lados */
             font-size: 0.9rem;
+            /* Tamaño de fuente de 0.9 rem */
             transition: color 0.3s;
+            /* Transición suave de color en 0.3 segundos al interactuar */
         }
 
         .navbar-nav .nav-link:hover {
             color: #00bcd4;
+            /* Cambia el color del enlace a un tono azul al pasar el cursor */
         }
 
+        /* Sección Hero (principal) */
         .hero-section {
             background: url('{% static "images/hero-background.jpg" %}') no-repeat center center/cover;
+            /* Establece una imagen de fondo, sin repetición, centrada y que cubre toda la sección */
             height: 100vh;
+            /* Altura de la sección al 100% de la altura de la ventana gráfica */
             display: flex;
+            /* Utiliza Flexbox para el diseño interno */
             flex-direction: column;
+            /* Organiza los elementos en columna */
             justify-content: center;
+            /* Centra verticalmente el contenido */
             align-items: center;
+            /* Centra horizontalmente el contenido */
             text-align: center;
+            /* Alinea el texto al centro */
             color: white;
+            /* Color del texto a blanco */
             padding: 0 20px;
+            /* Relleno lateral de 20px para espacios internos */
             position: relative;
+            /* Posicionamiento relativo para permitir la superposición de elementos */
         }
 
-        /* Fondo semitransparente detrás del texto */
+        /* Fondo semitransparente detrás del texto en la sección Hero */
         .hero-overlay {
-            background: rgba(0, 0, 0, 0.5); /* Fondo negro translúcido */
+            background: rgba(0, 0, 0, 0.5);
+            /* Fondo negro translúcido para mejorar la legibilidad del texto sobre la imagen de fondo */
             padding: 20px;
+            /* Relleno interno de 20px */
             border-radius: 10px;
+            /* Bordes redondeados de 10px */
             display: inline-block;
+            /* Hace que el fondo ocupe solo el espacio necesario del contenido */
         }
 
         .hero-section h1 {
             font-size: 3.5rem;
+            /* Tamaño de fuente de 3.5 rem para el título principal */
             text-transform: uppercase;
+            /* Transforma el texto a mayúsculas */
             font-weight: 700;
+            /* Peso de fuente de 700 (negrita) */
             margin-bottom: 15px;
+            /* Margen inferior de 15px */
             letter-spacing: 2px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8); /* Sombra del texto */
+            /* Espaciado de 2px entre letras */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+            /* Sombra del texto para mejorar la legibilidad sobre el fondo */
         }
 
         .hero-section p {
             font-size: 1.2rem;
+            /* Tamaño de fuente de 1.2 rem para el párrafo */
             color: #d1d5db;
+            /* Color del texto en un tono gris claro */
             margin-bottom: 30px;
+            /* Margen inferior de 30px */
             max-width: 700px;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); /* Sombra del texto */
+            /* Ancho máximo de 700px para el párrafo */
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+            /* Sombra del texto para mejorar la legibilidad */
         }
 
         .btn-primary {
             background-color: #00bcd4;
+            /* Color de fondo del botón azul */
             border: none;
+            /* Sin borde */
             font-size: 1rem;
+            /* Tamaño de fuente de 1 rem */
             padding: 12px 25px;
+            /* Relleno de 12px arriba y abajo, 25px a los lados */
             border-radius: 50px;
+            /* Bordes altamente redondeados para un aspecto de botón ovalado */
             transition: all 0.3s;
+            /* Transición suave para todas las propiedades en 0.3 segundos */
             text-transform: uppercase;
+            /* Transforma el texto a mayúsculas */
             letter-spacing: 1px;
+            /* Espaciado de 1px entre letras */
         }
 
         .btn-primary:hover {
             background-color: #0097a7;
+            /* Cambia el color de fondo a un tono azul más oscuro al pasar el cursor */
             transform: scale(1.05);
+            /* Aumenta ligeramente el tamaño del botón al interactuar */
         }
 
+        /* Sección de Características (Features) */
         .features-section {
             padding: 50px 20px;
+            /* Relleno de 50px arriba y abajo, 20px a los lados */
             background-color: #0d1117;
+            /* Color de fondo oscuro para la sección de características */
         }
 
         .features-title {
             text-align: center;
+            /* Alinea el título al centro */
             font-size: 2.5rem;
+            /* Tamaño de fuente de 2.5 rem para el título */
             margin-bottom: 50px;
+            /* Margen inferior de 50px */
             text-transform: uppercase;
+            /* Transforma el texto a mayúsculas */
             letter-spacing: 2px;
+            /* Espaciado de 2px entre letras */
             color: #fff;
+            /* Color del texto a blanco */
         }
 
         .feature-card {
             background-color: rgba(255, 255, 255, 0.05);
+            /* Fondo semitransparente para las tarjetas de características */
             border: none;
+            /* Sin borde */
             padding: 20px;
+            /* Relleno interno de 20px */
             text-align: center;
+            /* Alinea el texto al centro */
             transition: all 0.3s ease;
+            /* Transición suave para todas las propiedades en 0.3 segundos */
         }
 
         .feature-card:hover {
             transform: translateY(-10px);
+            /* Mueve la tarjeta hacia arriba al pasar el cursor */
             box-shadow: 0 8px 15px rgba(0, 188, 212, 0.3);
+            /* Añade una sombra azulada al interactuar */
         }
 
         .feature-card i {
             font-size: 3rem;
+            /* Tamaño de fuente de 3 rem para los iconos */
             color: #00bcd4;
+            /* Color de los iconos azul */
             margin-bottom: 20px;
+            /* Margen inferior de 20px */
         }
 
         .feature-card h5 {
             color: #fff;
+            /* Color del texto a blanco */
             font-size: 1.5rem;
+            /* Tamaño de fuente de 1.5 rem para los títulos de características */
             margin-bottom: 10px;
+            /* Margen inferior de 10px */
         }
 
+        /* Estilos para el Pie de Página (Footer) */
         footer {
             background-color: #000;
+            /* Color de fondo negro para el pie de página */
             color: #777;
+            /* Color del texto en un tono gris medio */
             text-align: center;
+            /* Alinea el texto al centro */
             padding: 20px 0;
+            /* Relleno de 20px arriba y abajo */
             margin-top: 50px;
+            /* Margen superior de 50px para separar del contenido anterior */
         }
 
         footer p {
             margin: 0;
+            /* Elimina el margen por defecto del párrafo */
             font-size: 0.9rem;
+            /* Tamaño de fuente de 0.9 rem */
             letter-spacing: 1px;
+            /* Espaciado de 1px entre letras */
         }
     </style>
 </head>
+
 <body>
-    <!-- Navbar -->
+    <!-- Barra de Navegación (Navbar) Fija en la Parte Superior de la Página -->
     <nav class="navbar navbar-expand-lg fixed-top">
+        <!-- Enlace a la Página de Inicio con el Nombre de la Marca -->
         <a class="navbar-brand" href="#">La Estantería Infinita</a>
+        <!-- Botón de Alternancia para Colapsar el Menú en Dispositivos Móviles -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <!-- Icono de Barras para el Botón de Alternancia -->
             <span class="navbar-toggler-icon"></span>
         </button>
+        <!-- Menú de Navegación Colapsable -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                <!-- Verifica si la página actual no es 'home' para mostrar el enlace a 'Inicio' -->
                 {% if not request.resolver_match.url_name == "home" %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:home' %}">Inicio</a></li>
                 {% endif %}
+                <!-- Enlace a la Página 'Acerca de' -->
                 <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:acerca' %}">Acerca de</a></li>
+                <!-- Verifica si el Usuario está Autenticado para Mostrar Enlaces Específicos -->
                 {% if user.is_authenticated %}
+                    <!-- Enlace para Cerrar Sesión -->
                     <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:logout' %}">Cerrar sesión</a></li>
                 {% else %}
+                    <!-- Enlaces para Iniciar Sesión y Registrarse para Usuarios No Autenticados -->
                     <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:login' %}">Iniciar sesión</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:signup' %}">Registrarse</a></li>
                 {% endif %}
@@ -176,26 +287,35 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Sección Hero Principal con una Imagen de Fondo y Contenido Superpuesto -->
     <div class="hero-section">
         <div class="hero-overlay">
+            <!-- Título Principal de la Sección 'La Estantería Infinita' -->
             <h1>La Estantería Infinita</h1>
+            <!-- Descripción Breve de la Plataforma -->
             <p>Un lugar donde puedes gestionar y explorar tu colección personal de libros con un diseño moderno y minimalista.</p>
+            <!-- Botón que Dirige a 'Mi Biblioteca' -->
             <a href="{% url 'mi_app:index' %}" class="btn btn-primary">Ir a Mi Biblioteca</a>
         </div>
     </div>
 
-    <!-- Features Section -->
+    <!-- Sección de Características (Features) -->
     <div class="features-section">
+        <!-- Título de la Sección de Características -->
         <h2 class="features-title">Descubre nuestras funcionalidades</h2>
         <div class="row row-cols-1 row-cols-md-3 g-4">
+            <!-- Característica 1: Gestión de Libros -->
             <div class="col">
                 <div class="feature-card">
+                    <!-- Icono Representativo de la Característica -->
                     <i class="fas fa-book"></i>
+                    <!-- Título de la Característica -->
                     <h5>Gestión de Libros</h5>
+                    <!-- Descripción de la Característica -->
                     <p>Administra tu colección personal de libros con facilidad y orden.</p>
                 </div>
             </div>
+            <!-- Característica 2: Búsqueda Inteligente -->
             <div class="col">
                 <div class="feature-card">
                     <i class="fas fa-search"></i>
@@ -203,6 +323,7 @@
                     <p>Encuentra cualquier libro de tu biblioteca en segundos.</p>
                 </div>
             </div>
+            <!-- Característica 3: Comparte Reseñas -->
             <div class="col">
                 <div class="feature-card">
                     <i class="fas fa-comments"></i>
@@ -213,12 +334,15 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Pie de Página (Footer) -->
     <footer>
-        <p>&copy; 2024 Biblioteca del Bienestar. Todos los derechos reservados.</p>
+        <!-- Texto de Derechos de Autor -->
+        <p>&copy; 2024 La Estanteria Infinita. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Scripts -->
+    <!-- Scripts Necesarios para el Funcionamiento de Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Enlaza el archivo JavaScript de Bootstrap desde un CDN para habilitar componentes interactivos -->
 </body>
+
 </html>

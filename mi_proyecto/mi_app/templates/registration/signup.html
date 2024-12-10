@@ -1,165 +1,199 @@
-{% load static %}
+{% load static %} 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrarse - Biblioteca</title>
+    <!-- Metadatos esenciales para la correcta visualización y funcionamiento del sitio -->
+    <meta charset="UTF-8"> <!-- Define la codificación de caracteres como UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Asegura que la página sea responsiva en dispositivos móviles -->
+    <title>Registrarse - Biblioteca</title> <!-- Título de la página que aparece en la pestaña del navegador -->
+
+    <!-- Enlace al ícono del sitio (favicon) utilizando la etiqueta 'static' de Django para cargar archivos estáticos -->
     <link rel="icon" type="image/x-icon" href="{% static 'images/libreria.ico' %}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Enlaces a hojas de estilo CSS de Bootstrap y otras librerías externas para dar estilo y funcionalidad -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> <!-- Hoja de estilos de Bootstrap para diseño responsivo y componentes estilizados -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Hoja de estilos personalizada del proyecto, cargada desde los archivos estáticos de Django -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- Hoja de estilos para Font Awesome, que permite usar iconos mediante clases -->
+
+    <!-- Estilos personalizados en línea para la página de registro -->
     <style>
+        /* Estilo general del cuerpo de la página */
         body {
-            background: url('{% static "images/hero-background.jpg" %}') no-repeat center center fixed;
-            background-size: cover;
-            font-family: 'Montserrat', 'Roboto', sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #fff;
+            background: url('{% static "images/hero-background.jpg" %}') no-repeat center center fixed; /* Imagen de fondo fija, centrada y sin repetición */
+            background-size: cover; /* La imagen de fondo cubrirá todo el fondo del cuerpo */
+            font-family: 'Montserrat', 'Roboto', sans-serif; /* Fuentes utilizadas en toda la página */
+            margin: 0; /* Elimina márgenes por defecto */
+            display: flex; /* Utiliza Flexbox para centrar el contenido */
+            justify-content: center; /* Centra horizontalmente */
+            align-items: center; /* Centra verticalmente */
+            height: 100vh; /* Altura del cuerpo igual a la altura de la ventana gráfica */
+            color: #fff; /* Color de texto blanco para contraste con el fondo oscuro */
         }
 
+        /* Contenedor principal del formulario de registro */
         .register-container {
-            background-color: rgba(0, 0, 0, 0.85);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            width: 100%;
-            max-width: 400px;
+            background-color: rgba(0, 0, 0, 0.85); /* Fondo semi-transparente negro */
+            padding: 40px; /* Espaciado interno de 40 píxeles */
+            border-radius: 15px; /* Bordes redondeados con un radio de 15 píxeles */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5); /* Sombra sutil para dar profundidad al contenedor */
+            text-align: center; /* Centra el texto dentro del contenedor */
+            width: 100%; /* Ancho completo del contenedor */
+            max-width: 400px; /* Ancho máximo de 400 píxeles para mantener una buena legibilidad */
         }
 
+        /* Imagen del formulario de registro */
         .register-image {
-            max-width: 80px;
-            margin-bottom: 20px;
+            max-width: 80px; /* Ancho máximo de 80 píxeles */
+            margin-bottom: 20px; /* Margen inferior de 20 píxeles para separar de otros elementos */
         }
 
+        /* Encabezado del formulario de registro */
         .register-header {
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: #00bcd4;
+            font-weight: bold; /* Texto en negrita */
+            text-transform: uppercase; /* Transforma el texto a mayúsculas */
+            font-size: 1.8rem; /* Tamaño de fuente de 1.8 rem para mayor destaque */
+            margin-bottom: 20px; /* Margen inferior de 20 píxeles */
+            color: #00bcd4; /* Color azul claro para el texto del encabezado */
         }
 
+        /* Espaciado entre grupos de formularios */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 20px; /* Margen inferior de 20 píxeles */
         }
 
+        /* Estilo de los campos de entrada del formulario */
         .form-control {
-            background-color: #222;
-            color: #fff;
-            border: 1px solid #444;
-            border-radius: 5px;
-            padding: 10px;
+            background-color: #222; /* Fondo oscuro para los campos de entrada */
+            color: #fff; /* Texto blanco para contraste */
+            border: 1px solid #444; /* Borde gris oscuro */
+            border-radius: 5px; /* Bordes ligeramente redondeados */
+            padding: 10px; /* Espaciado interno de 10 píxeles */
         }
 
+        /* Estilo de los campos de entrada al enfocarse */
         .form-control:focus {
-            background-color: #333;
-            color: #fff;
-            border-color: #00bcd4;
-            outline: none;
+            background-color: #333; /* Fondo ligeramente más claro al enfocarse */
+            color: #fff; /* Texto blanco permanece */
+            border-color: #00bcd4; /* Borde azul claro al enfocarse */
+            outline: none; /* Elimina el contorno por defecto del navegador */
         }
 
+        /* Botón de registro personalizado */
         .btn-register {
-            background-color: #00bcd4;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            width: 100%;
-            border-radius: 5px;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
+            background-color: #00bcd4; /* Color de fondo azul claro */
+            color: #fff; /* Texto blanco */
+            border: none; /* Sin borde adicional */
+            padding: 10px 15px; /* Espaciado interno vertical de 10 píxeles y horizontal de 15 píxeles */
+            width: 100%; /* Ancho completo del botón */
+            border-radius: 5px; /* Bordes ligeramente redondeados */
+            font-weight: bold; /* Texto en negrita */
+            text-transform: uppercase; /* Transforma el texto a mayúsculas */
+            transition: all 0.3s ease; /* Transición suave para todas las propiedades cambiadas */
         }
 
+        /* Estilo del botón de registro al pasar el cursor */
         .btn-register:hover {
-            background-color: #0097a7;
-            transform: scale(1.05);
+            background-color: #0097a7; /* Color de fondo azul más oscuro al pasar el cursor */
+            transform: scale(1.05); /* Aumenta ligeramente el tamaño del botón */
         }
 
+        /* Enlace para iniciar sesión */
         .login-link {
-            color: #00bcd4;
-            text-decoration: none;
-            font-size: 0.9rem;
+            color: #00bcd4; /* Color azul claro para el enlace */
+            text-decoration: none; /* Sin subrayado por defecto */
+            font-size: 0.9rem; /* Tamaño de fuente ligeramente más pequeño */
         }
 
+        /* Estilo del enlace para iniciar sesión al pasar el cursor */
         .login-link:hover {
-            text-decoration: underline;
+            text-decoration: underline; /* Subraya el texto al pasar el cursor */
         }
 
+        /* Estilo para las alertas de mensajes */
         .alert {
-            margin-bottom: 20px;
-            font-size: 0.9rem;
+            margin-bottom: 20px; /* Margen inferior de 20 píxeles */
+            font-size: 0.9rem; /* Tamaño de fuente ligeramente más pequeño */
         }
     </style>
 </head>
 <body>
+    <!-- Contenedor principal del formulario de registro -->
     <div class="register-container">
+        <!-- Imagen representativa del registro, cargada desde archivos estáticos de Django -->
         <img src="{% static 'images/library_register.png' %}" alt="Registro" class="register-image">
 
+        <!-- Encabezado del formulario de registro -->
         <h2 class="register-header">Registrarse</h2>
 
+        <!-- Sección para mostrar mensajes informativos al usuario -->
         {% if messages %}
-            <div class="alert alert-info" role="alert">
+            <div class="alert alert-info" role="alert"> <!-- Alerta de Bootstrap con estilo informativo -->
                 {% for message in messages %}
-                    {{ message }}
+                    {{ message }} <!-- Itera sobre los mensajes y los muestra -->
                 {% endfor %}
             </div>
         {% endif %}
 
+        <!-- Sección para mostrar errores en el formulario -->
         {% if form.errors %}
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger" role="alert"> <!-- Alerta de Bootstrap con estilo de error -->
                 Por favor, corrige los errores en el formulario:
-                {{ form.non_field_errors }}
+                {{ form.non_field_errors }} <!-- Muestra errores que no están asociados a un campo específico -->
             </div>
         {% endif %}
 
-        <form method="post" id="registerForm" class="row g-3">
-            {% csrf_token %}
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label for="id_username"><i class="fas fa-user"></i> Usuario</label>
-                    {{ form.username }}
+        <!-- Formulario de registro -->
+        <form method="post" id="registerForm" class="row g-3"> <!-- Método POST para enviar datos al servidor -->
+            {% csrf_token %} <!-- Token CSRF para protección contra ataques de falsificación de solicitudes entre sitios -->
+
+            <!-- Campo de entrada para el nombre de usuario -->
+            <div class="col-md-12"> <!-- Ocupa 12 columnas en dispositivos medianos y superiores -->
+                <div class="form-group"> <!-- Grupo de formulario para el campo de usuario -->
+                    <label for="id_username"><i class="fas fa-user"></i> Usuario</label> <!-- Etiqueta con icono de usuario -->
+                    {{ form.username }} <!-- Campo de entrada del formulario generado por Django -->
                     {% if form.username.errors %}
-                        <div class="text-danger">
-                            {{ form.username.errors }}
+                        <div class="text-danger"> <!-- Texto en rojo para errores -->
+                            {{ form.username.errors }} <!-- Muestra errores específicos del campo de usuario -->
                         </div>
                     {% endif %}
                 </div>
             </div>
+
+            <!-- Campo de entrada para la contraseña -->
             <div class="col-md-12">
                 <div class="form-group">
-                    <label for="id_password1"><i class="fas fa-lock"></i> Contraseña</label>
-                    {{ form.password1 }}
+                    <label for="id_password1"><i class="fas fa-lock"></i> Contraseña</label> <!-- Etiqueta con icono de candado -->
+                    {{ form.password1 }} <!-- Campo de entrada de contraseña generado por Django -->
                     {% if form.password1.errors %}
                         <div class="text-danger">
-                            {{ form.password1.errors }}
+                            {{ form.password1.errors }} <!-- Muestra errores específicos del campo de contraseña -->
                         </div>
                     {% endif %}
                 </div>
             </div>
+
+            <!-- Campo de entrada para confirmar la contraseña -->
             <div class="col-md-12">
                 <div class="form-group">
-                    <label for="id_password2"><i class="fas fa-lock"></i> Confirmar Contraseña</label>
-                    {{ form.password2 }}
+                    <label for="id_password2"><i class="fas fa-lock"></i> Confirmar Contraseña</label> <!-- Etiqueta con icono de candado -->
+                    {{ form.password2 }} <!-- Campo de entrada para confirmar la contraseña generado por Django -->
                     {% if form.password2.errors %}
                         <div class="text-danger">
-                            {{ form.password2.errors }}
+                            {{ form.password2.errors }} <!-- Muestra errores específicos del campo de confirmación de contraseña -->
                         </div>
                     {% endif %}
                 </div>
             </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-register">Registrarse <i class="fas fa-user-plus"></i></button>
+
+            <!-- Botón para enviar el formulario y registrarse -->
+            <div class="col-12"> <!-- Ocupa 12 columnas en todos los dispositivos -->
+                <button type="submit" class="btn btn-register">Registrarse <i class="fas fa-user-plus"></i></button> <!-- Botón estilizado con icono de usuario más -->
             </div>
         </form>
 
-        <div class="mt-3">
-            <p>¿Ya tienes una cuenta? <a href="{% url 'mi_app:login' %}" class="login-link">Iniciar sesión</a>.</p>
+        <!-- Enlace para redirigir a los usuarios que ya tienen una cuenta para iniciar sesión -->
+        <div class="mt-3"> <!-- Margen superior de 3 para separar del formulario -->
+            <p>¿Ya tienes una cuenta? <a href="{% url 'mi_app:login' %}" class="login-link">Iniciar sesión</a>.</p> <!-- Enlace estilizado para iniciar sesión -->
         </div>
     </div>
 </body>

@@ -1,15 +1,25 @@
 {% load static %}
 <!DOCTYPE html>
+<!-- Aquí declaramos el tipo de documento, en este caso es un documento HTML5, esto le dice al navegador cómo interpretar el contenido -->
 <html lang="es">
 <head>
+    <!-- Esta etiqueta meta define la codificación de caracteres, UTF-8 es estándar universal para caracteres especiales -->
     <meta charset="UTF-8">
+    <!-- Esta etiqueta meta hace que la página sea responsiva, adaptándose al ancho del dispositivo, esencial para el diseño adaptable (mobile-first) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Este es el título que aparece en la pestaña del navegador -->
     <title>Iniciar Sesión - Biblioteca</title>
+    <!-- Aquí se establece el ícono del sitio (favicon), usando una imagen estática cargada con el 'static' de Django -->
     <link rel="icon" type="image/x-icon" href="{% static 'images/libreria.ico' %}">
+    <!-- Se incluye la hoja de estilos de Bootstrap 4.5.2 desde un CDN para dar estilo y estructura responsiva -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Se incluye una hoja de estilos personalizada que está en el directorio 'static/css/styles.css' -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Se carga el CDN de Font Awesome para usar íconos mediante clases como <i class="fa ..."></i> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Aplicamos un fondo con imagen, fijado, centrado, a escala y una familia de fuentes específica.
+           También se eliminan los márgenes del body y se establece color de texto blanco */
         body {
             background: url('{% static "images/hero-background.jpg" %}') no-repeat center center fixed;
             background-size: cover;
@@ -18,11 +28,15 @@
             color: #fff;
         }
 
+        /* La barra de navegación tendrá un fondo semitransparente negro,
+           y una línea inferior gris oscura para separarla visualmente del contenido */
         .navbar {
             background-color: rgba(0, 0, 0, 0.8);
             border-bottom: 1px solid #30363d;
         }
 
+        /* La marca del sitio (nombre a la izquierda de la navbar) se muestra en un color azul claro
+           con negritas, mayor tamaño y un ligero espaciado entre letras */
         .navbar-brand {
             font-weight: bold;
             font-size: 1.5rem;
@@ -30,15 +44,23 @@
             color: #58a6ff;
         }
 
+        /* Los enlaces de la barra de navegación (nav-link) tendrán un color gris claro
+           y una transición suave al pasar el ratón */
         .navbar-nav .nav-link {
             color: #c9d1d9;
             transition: color 0.3s;
         }
 
+        /* Cuando el enlace nav-link esté en hover o activo,
+           cambiamos su color a un tono más azulado (#00bcd4) */
         .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
             color: #00bcd4;
         }
 
+        /* Contenedor del formulario de inicio de sesión con fondo semitransparente,
+           padding generoso, bordes redondeados, una sombra y centrado. Además, 
+           se restringe su ancho para no ocupar toda la pantalla y se coloca margen superior
+           para separarlo de la navbar. */
         .login-container {
             background-color: rgba(0, 0, 0, 0.85);
             padding: 40px;
@@ -50,11 +72,15 @@
             margin: 100px auto;
         }
 
+        /* Imagen del login (un ícono de biblioteca),
+           reducida a un ancho máximo de 80px y con un espacio inferior */
         .login-image {
             max-width: 80px;
             margin-bottom: 20px;
         }
 
+        /* Encabezado de inicio de sesión en letras grandes, negritas,
+           transformadas a mayúsculas y con color principal azul (#00bcd4) */
         .login-header {
             font-weight: bold;
             text-transform: uppercase;
@@ -63,10 +89,13 @@
             color: #00bcd4;
         }
 
+        /* Espaciado inferior entre elementos del formulario */
         .form-group {
             margin-bottom: 20px;
         }
 
+        /* Los campos del formulario tendrán un fondo gris oscuro (#222),
+           texto blanco y borde también gris, con bordes redondeados y un padding interno */
         .form-control {
             background-color: #222;
             color: #fff;
@@ -75,6 +104,9 @@
             padding: 10px;
         }
 
+        /* Al enfocar el campo, el fondo se oscurece un poco más,
+           el texto sigue en blanco, el borde se vuelve de color #00bcd4
+           y se elimina el contorno externo. */
         .form-control:focus {
             background-color: #333;
             color: #fff;
@@ -82,6 +114,9 @@
             outline: none;
         }
 
+        /* Botón de login con fondo azul (#00bcd4), texto blanco, sin borde adicional,
+           ocupando el 100% del ancho, con bordes redondeados, texto en mayúsculas y negritas.
+           Además, una ligera transición para cambiar al pasar el ratón */
         .btn-login {
             background-color: #00bcd4;
             color: #fff;
@@ -94,21 +129,27 @@
             transition: all 0.3s ease;
         }
 
+        /* Al pasar el cursor sobre el botón, se oscurece un tono, y aumenta ligeramente
+           de tamaño (scale(1.05)) para dar efecto interactivo */
         .btn-login:hover {
             background-color: #0097a7;
             transform: scale(1.05);
         }
 
+        /* El enlace de login (para registrarse o recuperar cuenta)
+           se muestra en color azul (#00bcd4), sin subrayado, y texto un poquito más pequeño */
         .login-link {
             color: #00bcd4;
             text-decoration: none;
             font-size: 0.9rem;
         }
 
+        /* Al pasar el ratón sobre el enlace, se subraya el texto */
         .login-link:hover {
             text-decoration: underline;
         }
 
+        /* Alertas con margen inferior y fuente un poco más pequeña */
         .alert {
             margin-bottom: 20px;
             font-size: 0.9rem;
@@ -116,34 +157,46 @@
     </style>
 </head>
 <body>
-    <!-- Barra de navegación -->
+    <!-- Barra de navegación superior fija (fixed-top) con enlaces a diferentes secciones del sitio -->
     <nav class="navbar navbar-expand-lg fixed-top">
-        <a class="navbar-brand" href="{% url 'mi_app:home' %}">Biblioteca del Bienestar</a>
+        <!-- El nombre del sitio, enlaza a la vista 'home' definida en 'mi_app' -->
+        <a class="navbar-brand" href="{% url 'mi_app:home' %}">LA Estanteria Infinita</a>
+        <!-- Este botón aparece en pantallas pequeñas para colapsar o expandir el menú de navegación -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <!-- El ícono del toggler se suele mostrar como tres líneas (hamburguesa) -->
             <span class="navbar-toggler-icon"></span>
         </button>
+        <!-- Aquí se agrupan los enlaces de navegación, que pueden colapsar en pantallas pequeñas -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                <!-- Enlace a la página de inicio -->
                 <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:home' %}">Inicio</a></li>
+                <!-- Enlace a la página "Acerca de" -->
                 <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:acerca' %}">Acerca de</a></li>
+                <!-- Enlace activo (clase active) a la página actual de "Iniciar Sesión" -->
                 <li class="nav-item"><a class="nav-link active" href="{% url 'mi_app:login' %}">Iniciar Sesión</a></li>
+                <!-- Enlace a la página de registro -->
                 <li class="nav-item"><a class="nav-link" href="{% url 'mi_app:signup' %}">Registrarse</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- Contenedor de Login -->
+    <!-- Contenedor principal del formulario de inicio de sesión -->
     <div class="login-container">
+        <!-- Imagen decorativa del login (un ícono de biblioteca) -->
         <img src="{% static 'images/library.png' %}" alt="Biblioteca" class="login-image">
 
+        <!-- Encabezado del formulario de login -->
         <h2 class="login-header">Iniciar Sesión</h2>
 
+        <!-- Si el formulario tiene errores, se muestra una alerta para el usuario -->
         {% if form.errors %}
             <div class="alert alert-danger" role="alert">
                 Por favor, corrige los errores abajo.
             </div>
         {% endif %}
         
+        <!-- Si existen mensajes (por ejemplo, de éxito o error) se muestran aquí con su respectivo estilo -->
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }}" role="alert">
@@ -152,24 +205,31 @@
             {% endfor %}
         {% endif %}
 
+        <!-- Formulario para enviar los datos al servidor.
+             Se utiliza 'csrf_token' para asegurar el envío de información. -->
         <form method="post" action="{% url 'mi_app:login' %}">
             {% csrf_token %}
+            <!-- Campo de usuario con su etiqueta -->
             <div class="form-group">
                 <label for="id_username">Usuario</label>
                 {{ form.username }}
             </div>
+            <!-- Campo de contraseña con su etiqueta -->
             <div class="form-group">
                 <label for="id_password">Contraseña</label>
                 {{ form.password }}
             </div>
+            <!-- Botón para enviar los datos del formulario -->
             <button type="submit" class="btn btn-login">Ingresar</button>
         </form>
 
+        <!-- Enlace para dirigirse a la página de registro en caso de no tener cuenta -->
         <div class="mt-3">
             <p>¿No tienes cuenta? <a href="{% url 'mi_app:signup' %}" class="login-link">Regístrate aquí</a>.</p>
         </div>
     </div>
 
+    <!-- Script de Bootstrap para funcionalidades interactivas del front-end -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
